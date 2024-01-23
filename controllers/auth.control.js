@@ -3,17 +3,7 @@ const asyncHandler = require("express-async-handler");
 const generateToken = require("../services/jwt.service")
 
 const authController = {
-
-
-
-
-  
   register: asyncHandler(async (req, res) => {
-
-
-
-
-    
         const existUser =await User.findOne({email: req.body.email})
 
         if(existUser){
