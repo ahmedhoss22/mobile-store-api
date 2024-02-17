@@ -26,20 +26,8 @@ const authenticate = asyncHandler( async (req,res,next)=>{
 })
 
 
-const adminAuth= (req,res,next)=>{
-    authenticate(req,res,()=>{
-        let user = req.user
-        if(!user.isAdmin){
-            return res.status(401).send({
-                message:"Route is only for admins !!"
-            })
-        }else{
-            next()
-        }
-    })
-}
+
 
 module.exports = {
     authorizeUser: authenticate,
-    authorizeAdmin : adminAuth
 }

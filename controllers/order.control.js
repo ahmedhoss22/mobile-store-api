@@ -1,27 +1,28 @@
-const asyncHandler = require("express-async-handler")
-const Order = require("../models/order.model")
-const mongoose = require("mongoose")
+const asyncHandler = require("express-async-handler");
+const Orders = require("../models/order.model");
 
-const OrderCtl = {
-    addOrder: asyncHandler(async (req,res)=>{
-        let data  =req.body
-   
-        if(!mongoose.isValidObjectId(data.product)  ){
-            return res.status(400).send({
-                message:" product Id must be valid object ID"
-            })
-        }
+const ordersCtl = {
+  getOrders: asyncHandler(async (req, res) => {
+    let data = await Orders.find();
+    res.send(data);
+  }),
+  deleteOrder: asyncHandler(async (req, res) => {
+    let id = req.params.id;
 
-        let newOrder= new Order({...data ,user: req.user._id})
-        await newOrder.save()
-        res.status(201).send({
-            message:"Order created !!"
-        })
-    }),
-    getAllOrders:asyncHandler(async (req,res)=>{
-       let data = await Order.find().populate("user").populate("product")
-       res.send(data)
-    })
-}
+    await Orders.findByIdAndDelete(id);
+    res.send();
+  }),
+  updateOrder: asyncHandler(async (req, res) => {
+    let newData = await Orders.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.send(newData);
+  }),
+  addOrder: asyncHandler(async (req, res) => {
+    let order = new Orders(req.body);
+    await order.save();
+    res.send(order);
+  }),
+};
 
-module.exports=  OrderCtl
+module.exports = ordersCtl;
